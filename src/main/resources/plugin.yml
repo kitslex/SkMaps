@@ -1,0 +1,10 @@
+name: SkMaps
+version: '${project.version}'
+main: me.wyvern.SkMaps
+api-version: 1.19
+authors: [ Wyvern ]
+depend: [Skript]
+permissions:
+  skhoneybee.map.admin:
+    description: Allows the user to use the map admin commands
+    default: op

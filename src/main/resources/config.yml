@@ -1,0 +1,9 @@
+
+
+# Prefix
+prefix: '&7[&6SkMaps&7]'
+admin-prefix: '&7[&6SkMaps &cAdmin&7]'
+
+# none, small, normal, verbose
+debug-level: none
+admin-debug-level: none
