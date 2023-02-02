@@ -5,7 +5,7 @@
 ## <ins>Contributing</ins>
 + **Looking for <ins>contributions</ins>, I need contributions please fork it and make pull requests!**
 
-## <ins>Wiki</ins>
+## <ins>[**Wiki**](https://github.com/WyvernX-YT/SkMaps/wiki)</ins>
 See the <ins>[**Wiki**](https://github.com/WyvernX-YT/SkMaps/wiki)</ins> for more detailed info on syntax and examples.
 
 ## <ins>Documentation</ins>
