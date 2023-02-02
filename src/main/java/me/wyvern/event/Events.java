@@ -21,25 +21,25 @@
 
 package me.wyvern.event;
 
+import me.wyvern.SkMaps;
+import me.wyvern.map.MapPixel;
 import me.wyvern.map.NamedMap;
 import me.wyvern.map.PixelLoc;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
+/**
+ * future
+ */
 public class Events implements Listener {
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        NamedMap map = new NamedMap("test", 1);
-        map.fill(Color.CYAN);
-        map.drawLine(new PixelLoc(0, 0), new PixelLoc(127, 127), Color.RED);
-        map.drawLine(new PixelLoc(127, 0), new PixelLoc(0, 127), Color.RED);
-
-        ItemStack item = map.buildItem();
-        event.getPlayer().getInventory().addItem(item);
-    }
 }

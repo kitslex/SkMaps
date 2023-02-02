@@ -56,6 +56,7 @@ public class Map implements Serializable {
     public void setPixel(int x, int y, Color color) {
         pixels[x][y] = new MapPixel(x, y, color);
     }
+
     public void setPixel(int x, int y, ColorRGB color) {
         org.bukkit.Color bukkitColor = color.asBukkitColor();
         Color awtColor = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
@@ -80,13 +81,7 @@ public class Map implements Serializable {
     public void fill(ColorRGB color) {
         org.bukkit.Color bukkitColor = color.asBukkitColor();
         Color awtColor = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
-        Stream.iterate(0, n -> n + 1)
-                .limit(MAP_WIDTH)
-                .parallel()
-                .forEach(x -> Stream.iterate(0, n -> n + 1)
-                        .limit(MAP_HEIGHT)
-                        .parallel()
-                        .forEach(y -> setPixel(x, y, awtColor)));
+        fill(awtColor);
     }
 
     public void fillWithColor(int r, int g, int b) {
@@ -138,31 +133,8 @@ public class Map implements Serializable {
     public void fillSection(PixelLoc start, PixelLoc end, ColorRGB color) {
         org.bukkit.Color bukkitColor = color.asBukkitColor();
         Color awtColor = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
-        int startX = start.getX();
-        int startY = start.getY();
-        int endX = end.getX();
-        int endY = end.getY();
-        if (startX > endX) {
-            int temp = startX;
-            startX = endX;
-            endX = temp;
-        }
-        if (startY > endY) {
-            int temp = startY;
-            startY = endY;
-            endY = temp;
-        }
-        int finalEndY = endY;
-        int finalStartY = startY;
-        Stream.iterate(startX, n -> n + 1)
-                .limit(endX - startX)
-                .parallel()
-                .forEach(x -> Stream.iterate(finalStartY, n -> n + 1)
-                        .limit(finalEndY - finalStartY)
-                        .parallel()
-                        .forEach(y -> setPixel(x, y, awtColor)));
+        fillSection(start, end, awtColor);
     }
-
 
 
     public void drawLine(PixelLoc a, PixelLoc b, Color c) {
@@ -190,7 +162,7 @@ public class Map implements Serializable {
         }
     }
 
-        public void drawLine(PixelLoc a, PixelLoc b, ColorRGB c) {
+    public void drawLine(PixelLoc a, PixelLoc b, ColorRGB c) {
         org.bukkit.Color bukkitColor = c.asBukkitColor();
         Color awtColor = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
         int x0 = a.getX();
@@ -221,10 +193,12 @@ public class Map implements Serializable {
         int x0 = center.getX();
         int y0 = center.getY();
 
-        for (int i = 0; i <= 360; i++) {
-            double angle = Math.toRadians(i);
-            int x1 = (int) (x0 + radius * Math.cos(angle));
-            int y1 = (int) (y0 + radius * Math.sin(angle));
+        double dtr = Math.PI / 180.0;
+        for(int x=0; x<=360; x++)
+        {
+            double radians = dtr * x;
+            int x1 = (int)(x0 + Math.cos(radians) * radius);
+            int y1 = (int)(y0 + Math.sin(radians) * radius);
             setPixel(x1, y1, color);
         }
     }
@@ -232,15 +206,7 @@ public class Map implements Serializable {
     public void drawCircle(PixelLoc center, int radius, ColorRGB color) {
         org.bukkit.Color bukkitColor = color.asBukkitColor();
         Color awtColor = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
-        int x0 = center.getX();
-        int y0 = center.getY();
-
-        for (int i = 0; i <= 360; i++) {
-            double angle = Math.toRadians(i);
-            int x1 = (int) (x0 + radius * Math.cos(angle));
-            int y1 = (int) (y0 + radius * Math.sin(angle));
-            setPixel(x1, y1, awtColor);
-        }
+        drawCircle(center, radius, awtColor);
     }
 
     public void drawText(String text, PixelLoc loc, Color color, Font font) {
@@ -292,11 +258,15 @@ public class Map implements Serializable {
     }
 
     public static BufferedImage resize(BufferedImage img, int newW, int newH) {
+        // rescale the image
         Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
         BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+        // draw the image into the BufferedImage
         Graphics2D g2d = dimg.createGraphics();
         g2d.drawImage(tmp, 0, 0, null);
         g2d.dispose();
+
         return dimg;
     }
 

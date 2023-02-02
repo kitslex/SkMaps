@@ -19,37 +19,21 @@
  * SOFTWARE.
  */
 
-package me.wyvern.map;
+package me.wyvern.command;
 
-import java.awt.*;
-import java.io.Serializable;
+import me.wyvern.SkMaps;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
-public class MapPixel implements Serializable {
+import java.util.Arrays;
 
-    private final int x;
-    private final int y;
-    private final Color color;
-
-    public MapPixel(int x, int y, Color color) {
-        this.x = x;
-        this.y = y;
-        this.color = color;
+public class CMDPrintContents implements CommandExecutor {
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        SkMaps skMaps = SkMaps.getInstance();
+        System.out.println(Arrays.deepToString(skMaps.getMapManager().getMapNames().toArray(new String[0])));
+        return false;
     }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public byte getByteColor() {
-        return (byte) color.getRGB();
-    }
-
 }

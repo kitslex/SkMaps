@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 
 public class EffDrawLine extends Effect {
     static {
-        Skript.registerEffect(EffDrawPixels.class, "draw line [between] %number%(,| )[ ]%number%[ and ]%number%(,| )[ ]%number% of [map] [named] %string% with [color|colour] %color%");
+        Skript.registerEffect(EffDrawLine.class, "draw line [between] %number%,[ ]%number% [and] %number%,[ ]%number% of [map] [named] %string% with [color|colour] %color%");
     }
     private Expression<Number> exprX1;
     private Expression<Number> exprY1;
@@ -74,7 +74,7 @@ public class EffDrawLine extends Effect {
 
     @Override
     public @NotNull String toString(@Nullable Event e, boolean debug) {
-        return "set pixels between " + exprX1.toString(e, debug) + ", " + exprY1.toString(e, debug) + " and " + exprX2.toString(e, debug) + ", " + exprY2.toString(e, debug) + " of map named " + map.toString(e, debug) + " with color " + color.toString(e, debug);
+        return "draw line between " + exprX1.toString(e, debug) + "," + exprY1.toString(e, debug) + " and " + exprX2.toString(e, debug) + "," + exprY2.toString(e, debug) + " of map named " + map.toString(e, debug) + " with color " + color.toString(e, debug);
     }
 
     @SuppressWarnings("all")

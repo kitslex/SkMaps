@@ -24,6 +24,7 @@ package me.wyvern;
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
 import me.wyvern.bukkitevent.PlayerClickEvent;
+import me.wyvern.command.CMDPrintContents;
 import me.wyvern.event.Events;
 import me.wyvern.map.MapManager;
 import me.wyvern.util.Color;
@@ -48,11 +49,15 @@ public final class SkMaps extends JavaPlugin {
     public void onEnable() {
         instance = this;
         loadConfig();
+        long start = System.currentTimeMillis();
         mapManager = new MapManager();
         mapManager.loadMaps();
 
         Bukkit.getPluginManager().registerEvents(new Events(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerClickEvent(), this);
+        Bukkit.getPluginCommand("printm").setExecutor(new CMDPrintContents());
+
+        skriptAddon = Skript.registerAddon(this);
 
         try {
             skriptAddon.loadClasses("me.wyvern", "skript");
@@ -60,12 +65,10 @@ public final class SkMaps extends JavaPlugin {
             throw new RuntimeException(e);
         }
 
-
-        skriptAddon = Skript.registerAddon(this);
-
-        getLogger().info(Color.colorize(prefix + " &aSuccessfully enabled!"));
-
+        long end = System.currentTimeMillis();
+        getLogger().info(Color.colorize(prefix + " &aSuccessfully enabled! Took &e" + (end - start) + "ms&a!"));
     }
+
 
 
     public void loadConfig() {

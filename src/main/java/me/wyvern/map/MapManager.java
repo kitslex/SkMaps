@@ -25,11 +25,15 @@ import ch.njol.skript.Skript;
 import me.wyvern.SkMaps;
 import me.wyvern.util.Color;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,6 +78,14 @@ public class MapManager {
         maps.remove(mapName);
     }
 
+    public void removeMapFile(String mapName) {
+        NamedMap map = maps.get(mapName);
+        File file = new File(SkMaps.getInstance().getDataFolder(), "maps/" + mapName + " (" + map.getMapId() + ").map");
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
     public NamedMap getMap(String mapName) {
         return maps.get(mapName);
     }
@@ -103,34 +115,59 @@ public class MapManager {
     }
 
     public static void saveMap(NamedMap map, File file) throws IOException {
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        config.set("mapName", map.getMapName());
-        config.set("mapId", map.getMapId());
-        config.set("mapPixels", map.getPixels());
-
-        config.save(file);
+        ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(file.toPath()));
+        oos.writeObject(map.getMapName());
+        oos.writeObject(map.getMapId());
+        oos.writeObject(map.getPixels());
+        oos.close();
     }
 
-    public void loadMaps() {
-        File folder = new File(SkMaps.getInstance().getDataFolder(), "maps");
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-        File[] files = folder.listFiles();
-        if (files == null) {
-            return;
-        }
-        for (File file : files) {
-            YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-            String mapName = config.getString("mapName");
-            int mapId = config.getInt("mapId");
-            MapPixel[][] pixels = (MapPixel[][]) config.get("mapPixels");
+    public void loadMap(String name) {
+        ObjectInputStream ois = null;
+        try {
+            File file = new File(SkMaps.getInstance().getDataFolder(), "maps/" + name + ".map");
+            ois = new ObjectInputStream(Files.newInputStream(file.toPath()));
+            String mapName = (String) ois.readObject();
+            int mapId = (int) ois.readObject();
+            MapPixel[][] pixels = (MapPixel[][]) ois.readObject();
             NamedMap map = new NamedMap(mapName, mapId);
             map.setPixels(pixels);
             addMap(map);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
+
+    /**
+     * To be removed
+     */
+    public void loadMaps() {
+        File file = new File(SkMaps.getInstance().getDataFolder(), "maps.yml");
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        ConfigurationSection section = config.getConfigurationSection("maps");
+        if (section == null) {
+            return;
+        }
+        for (String key : section.getKeys(false)) {
+            loadMap(key);
+        }
+    }
 
 
 

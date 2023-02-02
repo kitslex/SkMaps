@@ -22,6 +22,7 @@
 package me.wyvern.map;
 
 import me.wyvern.SkMaps;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -59,10 +60,14 @@ public class NamedMap extends Map implements Serializable {
         if (stackMeta == null) return null;
 
         MapMeta mapMeta = (MapMeta) stackMeta;
+        if (!mapMeta.hasMapView()) {
+            MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
+            mapMeta.setMapView(mapView);
+        }
         MapView mapView = mapMeta.getMapView();
-
         if (mapView == null) return null;
 
+        mapView.setLocked(true);
         mapView.getRenderers().clear();
         mapView.addRenderer(new ServerMapRenderer(this));
         mapMeta.setMapView(mapView);
@@ -96,4 +101,11 @@ public class NamedMap extends Map implements Serializable {
         }
     }
 
+    @Override
+    public String toString() {
+        return "NamedMap{" +
+                "mapName='" + mapName + '\'' +
+                ", mapId=" + mapId +
+                '}';
+    }
 }

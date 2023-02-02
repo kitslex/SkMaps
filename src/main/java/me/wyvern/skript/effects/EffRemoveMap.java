@@ -35,10 +35,11 @@ import javax.annotation.Nullable;
 
 public class EffRemoveMap extends Effect {
     static {
-        Skript.registerEffect(EffRemoveMap.class, "remove [map] %string%");
+        Skript.registerEffect(EffRemoveMap.class, "remove [map] %string% %-boolean%");
     }
 
     private Expression<String> map;
+    private Expression<Boolean> delete;
 
     @Override
     protected void execute(Event e) {
@@ -58,6 +59,10 @@ public class EffRemoveMap extends Effect {
             return;
         }
         mapManager.removeMap(mapName);
+
+        if (delete != null && Boolean.TRUE.equals(delete.getSingle(e))) {
+            mapManager.removeMapFile(mapName);
+        }
     }
 
     @Override
@@ -69,6 +74,7 @@ public class EffRemoveMap extends Effect {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         map = (Expression<String>) exprs[0];
+        delete = (Expression<Boolean>) exprs[1];
         return true;
     }
 }

@@ -62,6 +62,8 @@ public class EffRenderMap extends Effect {
             return;
         }
 
+        blockFace = blockFace.getOppositeFace();
+
         Block block = loc.getBlock();
         if (block.getType() == Material.AIR) {
             if (debugLevel >= 1) {
@@ -69,6 +71,7 @@ public class EffRenderMap extends Effect {
             }
             return;
         }
+        Block relative = block.getRelative(blockFace);
 
         String name = this.name.getSingle(event);
 
@@ -80,8 +83,7 @@ public class EffRenderMap extends Effect {
             return;
         }
         NamedMap namedMap = mapManager.getMap(name);
-
-        ItemFrame entity = (ItemFrame) loc.getWorld().spawnEntity(loc, EntityType.ITEM_FRAME);
+        ItemFrame entity = (ItemFrame) loc.getWorld().spawnEntity(relative.getLocation(), EntityType.ITEM_FRAME);
         entity.setFacingDirection(blockFace, true);
         entity.setItem(namedMap.buildItem());
     }
