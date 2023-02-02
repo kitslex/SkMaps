@@ -1,32 +1,15 @@
 # SkMaps
-SkMaps, is a skript addon ive made
 
-Looking for contributions:
+**SkMaps** is a [**Skript**](https://github.com/SkriptLang/Skript) addon that aims to add ways to create custom maps.
 
-I need contributions
-please fork it and make pull requests!
+## <ins>Contributing</ins>
++ **Looking for <ins>contributions</ins>, I need contributions please fork it and make pull requests!**
 
+## <ins>[**Wiki**](https://github.com/WyvernX-YT/SkMaps/wiki)</ins>
+See the <ins>[**Wiki**](https://github.com/WyvernX-YT/SkMaps/wiki)</ins> for more detailed info on syntax and examples.
 
-Docs: (temp) (Untill I get on skUnity/skHub)
+## <ins>Documentation</ins>
 
-create [a] [new] map (named|with name) %string% with [map] [[with] background [color|colour] %-color%] 
-(eg. create new map named "bob" with background colour rgb(255,255,255))
+[![SkriptHubViewTheDocs](http://skripthub.net/static/addon/ViewTheDocsButton.png)](http://skripthub.net/docs/?addon=SkMaps)
 
-remove [map] %string% %-boolean% 
-%-boolean% is if you want to delete the file
-(eg. remove "bob" true)
-
-set (background|full) [colour|color] of [map] %string% to %color%
-(eg. set background colour of map "bob" to rgb(255,255,255))
-
-draw circle at %number%,[ ]%number% with radius %number% with [color|colour] %color% on [map] [named|with name] %string%
-(eg. draw circle at 64,64 with radius 5 with colour rgb(20,20,20) on map named "bob")
-
-draw line (from|between) %number%,[ ]%number%( to | )number%,[ ]%number% with [color|colour] %color% on [map] [named|with name] %string%
-(eg. draw line from 1,1 to 127,127 with color rgb(20,20,20) on map named "bob")
-
-draw pixel [at] %number%,[ ]%number% with [color|colour] %color% on [map] [named|with name] %string%
-(eg. draw pixel at 1,1 with color rgb(20,20,20) on map named "bob")
-
-[the] map with name %string%
-(eg. map with name "bob") returns the map item
+[![Get on skUnity](https://skunity.com/branding/buttons/get_on_forums.png)](https://docs.skunity.com/syntax/search/addon:skmaps)

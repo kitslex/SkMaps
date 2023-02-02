@@ -25,15 +25,23 @@ import me.wyvern.SkMaps;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+
+import static me.wyvern.util.Color.colorize;
 
 public class CMDPrintContents implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         SkMaps skMaps = SkMaps.getInstance();
-        System.out.println(Arrays.deepToString(skMaps.getMapManager().getMapNames().toArray(new String[0])));
+
+        Player player = (Player) sender;
+        if (sender instanceof Player) {
+            player.sendMessage(colorize("&a&l[SkMaps] &a&lMaps Names (Saved in memory): "));
+            player.sendMessage(Arrays.deepToString(skMaps.getMapManager().getMapNames().toArray(new String[0])));
+    }
         return false;
     }
 }
