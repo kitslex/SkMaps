@@ -25,8 +25,6 @@ import ch.njol.skript.Skript;
 import me.wyvern.SkMaps;
 import me.wyvern.util.Color;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 
@@ -114,9 +112,6 @@ public class MapManager {
         maps.clear();
     }
 
-    public void saveMaps() {
-        maps.values().forEach(NamedMap::save);
-    }
 
     public static void saveMap(NamedMap map, File file) throws IOException {
         ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(file.toPath()));
@@ -158,9 +153,7 @@ public class MapManager {
     }
 
 
-    /**
-     * To be removed
-     */
+    @Deprecated(since = "1.0.0", forRemoval = true)
     public void loadMaps() {
         File file = new File(SkMaps.getInstance().getDataFolder(), "maps");
         if (!file.exists()) {
@@ -177,7 +170,8 @@ public class MapManager {
         }
     }
 
-
-
-
+    @Deprecated(since = "1.0.0", forRemoval = true)
+    public void saveMaps() {
+        maps.values().forEach(NamedMap::save);
+    }
 }

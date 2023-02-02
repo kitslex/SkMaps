@@ -24,7 +24,6 @@ package me.wyvern;
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
 import me.wyvern.command.CMDPrintContents;
-import me.wyvern.event.Events;
 import me.wyvern.map.MapManager;
 import me.wyvern.util.Color;
 import org.bukkit.Bukkit;
@@ -50,7 +49,6 @@ public final class SkMaps extends JavaPlugin {
         loadConfig();
         long start = System.currentTimeMillis();
         mapManager = new MapManager();
-        mapManager.loadMaps();
 
         Bukkit.getPluginManager().registerEvents(new Events(), this);
         Bukkit.getPluginCommand("printm").setExecutor(new CMDPrintContents());
@@ -88,7 +86,6 @@ public final class SkMaps extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        mapManager.saveMaps();
     }
 
 
