@@ -23,7 +23,6 @@ package me.wyvern;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
-import me.wyvern.bukkitevent.PlayerClickEvent;
 import me.wyvern.command.CMDPrintContents;
 import me.wyvern.event.Events;
 import me.wyvern.map.MapManager;

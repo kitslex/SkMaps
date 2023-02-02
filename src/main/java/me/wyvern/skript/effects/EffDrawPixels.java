@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 
 public class EffDrawPixels extends Effect {
     static {
-        Skript.registerEffect(EffDrawPixels.class, "draw pixels [between] %number%(,| )[ ]%number%[ and ]%number%(,| )[ ]%number% of [map] [named] %string% with [color|colour] %color%");
+        Skript.registerEffect(EffDrawPixels.class, "draw pixels (from|between) %number%,[ ]%number%( to | )number%,[ ]%number% with radius %number% with [color|colour] %color% on [map] [named|with name] %string%");
     }
 
     private Expression<Number> exprX1;

@@ -28,6 +28,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.map.MapView;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,6 +68,9 @@ public class MapManager {
             }
             return;
         }
+        MapView mapView = Bukkit.getMap(map.getMapId());
+        mapView.getRenderers().clear();
+        mapView.addRenderer(new ServerMapRenderer(map));
         maps.put(map.getMapName(), map);
     }
 
@@ -80,7 +84,7 @@ public class MapManager {
 
     public void removeMapFile(String mapName) {
         NamedMap map = maps.get(mapName);
-        File file = new File(SkMaps.getInstance().getDataFolder(), "maps/" + mapName + " (" + map.getMapId() + ").map");
+        File file = new File(SkMaps.getInstance().getDataFolder(), "maps/" + mapName + ".map");
         if (file.exists()) {
             file.delete();
         }
@@ -117,7 +121,7 @@ public class MapManager {
     public static void saveMap(NamedMap map, File file) throws IOException {
         ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(file.toPath()));
         oos.writeObject(map.getMapName());
-        oos.writeObject(map.getMapId());
+        oos.writeInt(map.getMapId());
         oos.writeObject(map.getPixels());
         oos.close();
     }
@@ -128,10 +132,17 @@ public class MapManager {
             File file = new File(SkMaps.getInstance().getDataFolder(), "maps/" + name + ".map");
             ois = new ObjectInputStream(Files.newInputStream(file.toPath()));
             String mapName = (String) ois.readObject();
-            int mapId = (int) ois.readObject();
+            int mapId = (int) ois.readInt();
             MapPixel[][] pixels = (MapPixel[][]) ois.readObject();
-            NamedMap map = new NamedMap(mapName, mapId);
+            NamedMap map = new NamedMap(mapName);
             map.setPixels(pixels);
+
+            MapView view = Bukkit.getMap(mapId);
+            if (view == null) {
+                view = Bukkit.createMap(Bukkit.getWorlds().get(0));
+            }
+
+            map.setMapId(view.getId());
             addMap(map);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -151,21 +162,18 @@ public class MapManager {
      * To be removed
      */
     public void loadMaps() {
-        File file = new File(SkMaps.getInstance().getDataFolder(), "maps.yml");
+        File file = new File(SkMaps.getInstance().getDataFolder(), "maps");
         if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            file.mkdirs();
         }
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        ConfigurationSection section = config.getConfigurationSection("maps");
-        if (section == null) {
+        File[] files = file.listFiles();
+        if (files == null) {
             return;
         }
-        for (String key : section.getKeys(false)) {
-            loadMap(key);
+        for (File f : files) {
+            if (f.getName().endsWith(".map")) {
+                loadMap(f.getName().replace(".map", ""));
+            }
         }
     }
 

@@ -36,20 +36,23 @@ import java.io.Serializable;
 public class NamedMap extends Map implements Serializable {
 
     private final String mapName;
-    private final long mapId;
+    private int mapId;
 
 
-    public NamedMap(String mapName, long mapId) {
+    public NamedMap(String mapName) {
         this.mapName = mapName;
-        this.mapId = mapId;
     }
 
     public String getMapName() {
         return mapName;
     }
 
-    public long getMapId() {
+    public int getMapId() {
         return mapId;
+    }
+
+    public void setMapId(int mapId) {
+        this.mapId = mapId;
     }
 
 
@@ -61,19 +64,15 @@ public class NamedMap extends Map implements Serializable {
 
         MapMeta mapMeta = (MapMeta) stackMeta;
         if (!mapMeta.hasMapView()) {
-            MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
+            MapView mapView = Bukkit.getMap(mapId);
             mapMeta.setMapView(mapView);
         }
         MapView mapView = mapMeta.getMapView();
         if (mapView == null) return null;
-
-        mapView.setLocked(true);
-        mapView.getRenderers().clear();
-        mapView.addRenderer(new ServerMapRenderer(this));
+        mapView.setLocked(false);
         mapMeta.setMapView(mapView);
 
         item.setItemMeta(mapMeta);
-        item.setDurability((short) mapId);
 
         return item;
     }

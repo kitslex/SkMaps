@@ -58,11 +58,11 @@ public class EffRemoveMap extends Effect {
             }
             return;
         }
-        mapManager.removeMap(mapName);
-
         if (delete != null && Boolean.TRUE.equals(delete.getSingle(e))) {
             mapManager.removeMapFile(mapName);
         }
+
+        mapManager.removeMap(mapName);
     }
 
     @Override

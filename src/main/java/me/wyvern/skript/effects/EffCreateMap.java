@@ -30,21 +30,24 @@ import ch.njol.util.Kleenean;
 import me.wyvern.SkMaps;
 import me.wyvern.map.NamedMap;
 import me.wyvern.map.MapManager;
+import me.wyvern.map.ServerMapRenderer;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
+import org.bukkit.map.MapView;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
 public class EffCreateMap extends Effect {
     static {
-        Skript.registerEffect(EffCreateMap.class, "create [a] [new] map named %string% [with [a] background [colour|color] [of] [%color%]]");
+        Skript.registerEffect(EffCreateMap.class, "create [a] [new] map (named|with name) %string% with [map] [[with] background [color|colour] %-color%]");
     }
 
     private Expression<String> map;
     private Expression<ColorRGB> color;
 
     @Override
-    protected void execute(Event e) {
+    protected void execute(@NotNull Event e) {
         int debugLevel = SkMaps.getDebugLevel(SkMaps.getInstance().getDebugLevel());
         if (map == null) {
             if (debugLevel >= 1) {
@@ -60,7 +63,10 @@ public class EffCreateMap extends Effect {
             }
             return;
         }
-        NamedMap namedMap = new NamedMap(mapName, map.hashCode());
+        MapView mapView = Bukkit.createMap(Bukkit.getWorlds().get(0));
+        NamedMap namedMap = new NamedMap(mapName);
+
+        namedMap.setMapId(mapView.getId());
         if (color != null) {
             ColorRGB colorRGB = color.getSingle(e);
             if (colorRGB != null) {

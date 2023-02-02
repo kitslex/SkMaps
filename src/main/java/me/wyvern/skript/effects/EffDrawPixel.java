@@ -37,7 +37,7 @@ import java.util.Objects;
 
 public class EffDrawPixel extends Effect {
     static {
-        Skript.registerEffect(EffDrawPixel.class, "draw pixel [at] %number%,[ ]%number% of [map] [named] %string% with [color|colour] %color%");
+        Skript.registerEffect(EffDrawPixel.class, "draw pixel [at] %number%,[ ]%number% %string% with [color|colour] %color% on [map] [named|with name] %string%");
     }
 
     private Expression<Number> exprX;

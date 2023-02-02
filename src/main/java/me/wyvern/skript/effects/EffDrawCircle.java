@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 public class EffDrawCircle extends Effect {
 
     static {
-        Skript.registerEffect(EffDrawCircle.class, "draw circle at %number%,[ ]%number% with radius %number% with [color|colour] %color% on [map] %string%");
+        Skript.registerEffect(EffDrawCircle.class, "draw circle at %number%,[ ]%number% with radius %number% with [color|colour] %color% on [map] [named|with name] %string%");
     }
 
     private Expression<Number> x;
