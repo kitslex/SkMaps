@@ -37,13 +37,13 @@ import java.util.Objects;
 
 public class EffDrawPixel extends Effect {
     static {
-        Skript.registerEffect(EffDrawPixel.class, "draw pixel [at] %number%,[ ]%number% %string% with [color|colour] %color% on [map] [named|with name] %string%");
+        Skript.registerEffect(EffDrawPixel.class, "draw pixel [at] %number%,[ ]%number% with [color|colour] %color% on [map] [named|with name] %string%");
     }
 
     private Expression<Number> exprX;
     private Expression<Number> exprY;
-    private Expression<String> exprMap;
     private Expression<ColorRGB> exprColor;
+    private Expression<String> exprMap;
 
     @Override
     protected void execute(@NotNull Event e) {
@@ -84,8 +84,8 @@ public class EffDrawPixel extends Effect {
     public boolean init(Expression<?> @NotNull [] exprs, int matchedPattern, @NotNull Kleenean isDelayed, SkriptParser.@NotNull ParseResult parseResult) {
         exprX = (Expression<Number>) exprs[0];
         exprY = (Expression<Number>) exprs[1];
-        exprMap = (Expression<String>) exprs[2];
-        exprColor = (Expression<ColorRGB>) exprs[3];
+        exprColor = (Expression<ColorRGB>) exprs[2];
+        exprMap = (Expression<String>) exprs[3];
         return true;
     }
 }

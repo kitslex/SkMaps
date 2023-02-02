@@ -37,14 +37,14 @@ import javax.annotation.Nullable;
 
 public class EffDrawLine extends Effect {
     static {
-        Skript.registerEffect(EffDrawLine.class, "draw line (from|between) %number%,[ ]%number%( to | )number%,[ ]%number% with radius %number% with [color|colour] %color% on [map] [named|with name] %string%");
+        Skript.registerEffect(EffDrawLine.class, "draw line (from|between) %number%,[ ]%number%( to | )number%,[ ]%number% with [color|colour] %color% on [map] [named|with name] %string%");
     }
     private Expression<Number> exprX1;
     private Expression<Number> exprY1;
     private Expression<Number> exprX2;
     private Expression<Number> exprY2;
-    private Expression<String> map;
     private Expression<ColorRGB> color;
+    private Expression<String> map;
     @Override
     protected void execute(@NotNull Event e) {
         int debugLevel = SkMaps.getDebugLevel(SkMaps.getInstance().getDebugLevel());
@@ -84,8 +84,8 @@ public class EffDrawLine extends Effect {
         exprY1 = (Expression<Number>) exprs[1];
         exprX2 = (Expression<Number>) exprs[2];
         exprY2 = (Expression<Number>) exprs[3];
-        map = (Expression<String>) exprs[4];
-        color = (Expression<ColorRGB>) exprs[5];
+        color = (Expression<ColorRGB>) exprs[4];
+        map = (Expression<String>) exprs[5];
         return true;
     }
 }
