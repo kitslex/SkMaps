@@ -53,7 +53,6 @@ public final class SkMaps extends JavaPlugin {
         mapManager.loadMaps();
 
         Bukkit.getPluginManager().registerEvents(new Events(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerClickEvent(), this);
         Bukkit.getPluginCommand("printm").setExecutor(new CMDPrintContents());
 
         skriptAddon = Skript.registerAddon(this);
