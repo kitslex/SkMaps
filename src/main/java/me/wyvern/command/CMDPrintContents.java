@@ -36,9 +36,8 @@ public class CMDPrintContents implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         SkMaps skMaps = SkMaps.getInstance();
-        Player player = (Player) sender;
-        player.sendMessage(colorize("&a[SkMaps] &a&lMaps Names (Saved in memory) "));
-        player.sendMessage(colorize("&c" + Arrays.deepToString(skMaps.getMapManager().getMapNames().toArray(new String[0]))));
+        sender.sendMessage(colorize("&a[SkMaps] &a&lMaps Names (Saved in memory) "));
+        sender.sendMessage(colorize("&c" + Arrays.deepToString(skMaps.getMapManager().getMapNames().toArray(new String[0]))));
 
         return false;
     }
