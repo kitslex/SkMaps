@@ -30,27 +30,29 @@ import ch.njol.util.Kleenean;
 import me.wyvern.SkMaps;
 import me.wyvern.map.NamedMap;
 import me.wyvern.map.PixelLoc;
+import me.wyvern.util.ColorRGBA;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
 public class EffBezierCurve extends Effect {
     static {
-        Skript.registerEffect(EffBezierCurve.class, "draw bezier curve (from|between) %number%,[ ]%number% [to] %number%,[ ]%number% [with] control points %number%,[ ]%number% [and] %number%,[ ]%number% (on|of) [map] %string% with color %color%");
+        Skript.registerEffect(EffBezierCurve.class, "draw bezier curve (from|between) %pixelloc% [to] %pixelloc% [with] control points %pixelloc% [and] %pixelloc% (on|of) [map] %string% with color %colorrgba%");
     }
 
-    private Expression<Number> x1, y1, x2, y2, x3, y3, x4, y4;
+    private Expression<PixelLoc> start;
+    private Expression<PixelLoc> end;
+    private Expression<PixelLoc> control1;
+    private Expression<PixelLoc> control2;
     private Expression<String> map;
-    private Expression<ColorRGB> color;
+    private Expression<ColorRGBA> color;
 
-    private PixelLoc p1, p2;
-    private PixelLoc control1, control2;
+
 
     @Override
     protected void execute(Event e) {
-        setPoints(e);
         String mapName = map.getSingle(e);
-        ColorRGB color = this.color.getSingle(e);
+        ColorRGBA color = this.color.getSingle(e);
         if (mapName == null || color == null) {
             Skript.warning("Map name or color is null!");
             return;
@@ -62,33 +64,24 @@ public class EffBezierCurve extends Effect {
             return;
         }
 
-        namedMap.bezierCurve(p1, p2, control1, control2, color);
+        namedMap.bezierCurve(start.getSingle(e), end.getSingle(e), control1.getSingle(e), control2.getSingle(e), color.toColor());
     }
 
-    public void setPoints(Event e) {
-        p1 = new PixelLoc(x1.getSingle(e).intValue(), y1.getSingle(e).intValue());
-        p2 = new PixelLoc(x2.getSingle(e).intValue(), y2.getSingle(e).intValue());
-        control1 = new PixelLoc(x3.getSingle(e).intValue(), y3.getSingle(e).intValue());
-        control2 = new PixelLoc(x4.getSingle(e).intValue(), y4.getSingle(e).intValue());
-    }
+
 
     @Override
     public String toString(@Nullable Event e, boolean debug) {
-        return "draw bezier curve from " + x1.toString(e, debug) + ", " + y1.toString(e, debug) + " to " + x2.toString(e, debug) + ", " + y2.toString(e, debug) + " with control points " + x3.toString(e, debug) + ", " + y3.toString(e, debug) + " and " + x4.toString(e, debug) + ", " + y4.toString(e, debug) + " on map " + map.toString(e, debug) + " with color " + color.toString(e, debug);
+        return "draw bezier curve from " + start.toString(e, debug) + " to " + end.toString(e, debug) + " with control points " + control1.toString(e, debug) + " and " + control2.toString(e, debug) + " on map " + map.toString(e, debug) + " with color " + color.toString(e, debug);
     }
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        x1 = (Expression<Number>) exprs[0];
-        y1 = (Expression<Number>) exprs[1];
-        x2 = (Expression<Number>) exprs[2];
-        y2 = (Expression<Number>) exprs[3];
-        x3 = (Expression<Number>) exprs[4];
-        y3 = (Expression<Number>) exprs[5];
-        x4 = (Expression<Number>) exprs[6];
-        y4 = (Expression<Number>) exprs[7];
-        map = (Expression<String>) exprs[8];
-        color = (Expression<ColorRGB>) exprs[9];
+        start = (Expression<PixelLoc>) exprs[0];
+        end = (Expression<PixelLoc>) exprs[1];
+        control1 = (Expression<PixelLoc>) exprs[2];
+        control2 = (Expression<PixelLoc>) exprs[3];
+        map = (Expression<String>) exprs[4];
+        color = (Expression<ColorRGBA>) exprs[5];
         return true;
     }
 }

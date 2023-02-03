@@ -23,7 +23,7 @@ package me.wyvern.map;
 
 import ch.njol.skript.Skript;
 import me.wyvern.SkMaps;
-import me.wyvern.util.Color;
+import me.wyvern.util.ColorRGBA;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
@@ -51,14 +51,14 @@ public class MapManager {
                 case 0:
                     return;
                 case 1:
-                    Skript.warning(Color.colorize(SkMaps.getInstance().getPrefix() + " &cMap with name " + map.getMapName() + " already exists!"));
+                    Skript.warning(ColorRGBA.colorize(SkMaps.getInstance().getPrefix() + " &cMap with name " + map.getMapName() + " already exists!"));
                     return;
                 case 2:
                 case 3:
                     Stream<Player> players = (Stream<Player>) Bukkit.getOnlinePlayers().stream();
                     Stream<Player> playersWithPermission = players.filter(player -> player.hasPermission("skhoneybee.map.admin"));
                     String prefix = SkMaps.getInstance().getAdminPrefix();
-                    String message = Color.colorize(prefix + " &cA map with the name &e" + map.getMapName() + " &calready exists!");
+                    String message = ColorRGBA.colorize(prefix + " &cA map with the name &e" + map.getMapName() + " &calready exists!");
                     playersWithPermission.forEach(player -> player.sendMessage(message));
 
                     Skript.error("A map with the name " + map.getMapName() + " already exists!");
