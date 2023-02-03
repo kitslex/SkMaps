@@ -211,6 +211,50 @@ public class Map implements Serializable {
                         .forEach(y -> setPixel(x, y, new Color(fImage.getRGB(x, y)))));
     }
 
+    public void drawImage(BufferedImage image, PixelLoc loc) {
+        BufferedImage fImage;
+        int debugLevel = SkMaps.getDebugLevel(SkMaps.getInstance().getDebugLevel());
+        int imWidth = image.getWidth();
+        int imHeight = image.getHeight();
+        if (imWidth > MAP_WIDTH || imHeight > MAP_HEIGHT) {
+            if (debugLevel >= 2) {
+                Skript.warning("Image is too large to be drawn on the map. Resizing...");
+                fImage = resize(image, MAP_WIDTH, MAP_HEIGHT);
+            } else {
+                fImage = image;
+            }
+        } else {
+            fImage = image;
+        }
+        int startX = loc.getX();
+        int startY = loc.getY();
+        int endX = startX + fImage.getWidth();
+        int endY = startY + fImage.getHeight();
+        if (startX > endX) {
+            int temp = startX;
+            startX = endX;
+            endX = temp;
+        }
+        if (startY > endY) {
+            int temp = startY;
+            startY = endY;
+            endY = temp;
+        }
+        int finalEndY = endY;
+        int finalStartY = startY;
+
+        int finalStartX = startX;
+        int finalStartY1 = startY;
+        Stream.iterate(startX, n -> n + 1)
+                .limit(endX - startX)
+                .parallel()
+                .forEach(x -> Stream.iterate(finalStartY, n -> n + 1)
+                        .limit(finalEndY - finalStartY)
+                        .parallel()
+                        .forEach(y -> setPixel(x, y, new Color(fImage.getRGB(x - finalStartX, y - finalStartY1)))));
+    }
+
+
     public static BufferedImage resize(BufferedImage img, int newW, int newH) {
         // rescale the image
         Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
