@@ -30,13 +30,14 @@ import ch.njol.util.Kleenean;
 import me.wyvern.SkMaps;
 import me.wyvern.map.NamedMap;
 import me.wyvern.map.PixelLoc;
+import me.wyvern.util.ColorRGBA;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
 public class EffBezierCurve extends Effect {
     static {
-        Skript.registerEffect(EffBezierCurve.class, "draw bezier curve (from|between) %pixelloc% [to] %pixelloc% [with] control points %pixelloc% [and] %pixelloc% (on|of) [map] %string% with color %color%");
+        Skript.registerEffect(EffBezierCurve.class, "draw bezier curve (from|between) %pixelloc% [to] %pixelloc% [with] control points %pixelloc% [and] %pixelloc% (on|of) [map] %string% with color %colorrgba%");
     }
 
     private Expression<PixelLoc> start;
@@ -44,14 +45,14 @@ public class EffBezierCurve extends Effect {
     private Expression<PixelLoc> control1;
     private Expression<PixelLoc> control2;
     private Expression<String> map;
-    private Expression<ColorRGB> color;
+    private Expression<ColorRGBA> color;
 
 
 
     @Override
     protected void execute(Event e) {
         String mapName = map.getSingle(e);
-        ColorRGB color = this.color.getSingle(e);
+        ColorRGBA color = this.color.getSingle(e);
         if (mapName == null || color == null) {
             Skript.warning("Map name or color is null!");
             return;
@@ -63,7 +64,7 @@ public class EffBezierCurve extends Effect {
             return;
         }
 
-        namedMap.bezierCurve(start.getSingle(e), end.getSingle(e), control1.getSingle(e), control2.getSingle(e), color);
+        namedMap.bezierCurve(start.getSingle(e), end.getSingle(e), control1.getSingle(e), control2.getSingle(e), color.toColor());
     }
 
 
@@ -80,7 +81,7 @@ public class EffBezierCurve extends Effect {
         control1 = (Expression<PixelLoc>) exprs[2];
         control2 = (Expression<PixelLoc>) exprs[3];
         map = (Expression<String>) exprs[4];
-        color = (Expression<ColorRGB>) exprs[5];
+        color = (Expression<ColorRGBA>) exprs[5];
         return true;
     }
 }

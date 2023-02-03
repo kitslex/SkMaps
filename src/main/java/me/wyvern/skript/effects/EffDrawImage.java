@@ -33,29 +33,40 @@ import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class EffDrawImage extends Effect {
 
     static {
-        Skript.registerEffect(EffDrawImage.class, "draw image %imagefile% at %pixelloc% on [the] map [named|with name] %string%");
+        Skript.registerEffect(EffDrawImage.class, "draw image %string% on [the] map [named|with name] %string%");
     }
 
-    private Expression<BufferedImage> image;
-    private Expression<PixelLoc> loc;
+    private Expression<String> image;
     private Expression<String> map;
     @Override
     protected void execute(Event e) {
-        BufferedImage image = this.image.getSingle(e);
-        PixelLoc loc = this.loc.getSingle(e);
+        File imageFile = new File(SkMaps.getInstance().getDataFolder(), "images/" + image.getSingle(e));
+        if (!imageFile.exists()) {
+            Skript.warning("Image file does not exist!");
+            return;
+        }
+
+        BufferedImage image = null;
+        try {
+            image = javax.imageio.ImageIO.read(imageFile);
+        } catch (Exception ex) {
+            Skript.warning("Error reading image file!");
+            return;
+        }
         String mapName = this.map.getSingle(e);
-        if (image == null || loc == null || mapName == null) return;
+        if (image == null || mapName == null) return;
         NamedMap map = SkMaps.getInstance().getMapManager().getMap(mapName);
         if (map == null) {
             Skript.warning("Map named " + mapName + " does not exist!");
             return;
         }
 
-        map.drawImage(image, loc);
+        map.drawImage(image);
     }
 
     @Override
@@ -65,9 +76,8 @@ public class EffDrawImage extends Effect {
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        this.image = (Expression<BufferedImage>) exprs[0];
-        this.loc = (Expression<PixelLoc>) exprs[1];
-        this.map = (Expression<String>) exprs[2];
+        this.image = (Expression<String>) exprs[0];
+        this.map = (Expression<String>) exprs[1];
         return true;
     }
 }

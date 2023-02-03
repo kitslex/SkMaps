@@ -29,6 +29,7 @@ import me.wyvern.util.ColorRGBA;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.io.IOException;
 
 public final class SkMaps extends JavaPlugin {
@@ -49,6 +50,11 @@ public final class SkMaps extends JavaPlugin {
         loadConfig();
         long start = System.currentTimeMillis();
         mapManager = new MapManager();
+
+        File imagesFolder = new File(getDataFolder(), "images");
+        if (!imagesFolder.exists()) {
+            imagesFolder.mkdirs();
+        }
 
         Bukkit.getPluginCommand("debugmaps").setExecutor(new CMDPrintContents());
         skriptAddon = Skript.registerAddon(this);

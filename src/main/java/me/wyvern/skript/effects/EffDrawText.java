@@ -54,18 +54,22 @@ public class EffDrawText extends Effect {
     @Override
     protected void execute(@NotNull Event e) {
         String text = this.text.getSingle(e);
-        String font = this.font.getSingle(e);
-        int size = this.size.getSingle(e).intValue();
+        String font;
+        int size;
+        if (this.font == null) {
+            font = "Arial";
+        } else {
+            font = this.font.getSingle(e);
+        }
+          if (this.size == null) {
+                size = 12;
+          } else {
+                size = this.size.getSingle(e).intValue();
+          }
         ColorRGBA color = this.color.getSingle(e);
         String mapName = this.map.getSingle(e);
         if (text == null) {
             Skript.error("Text is null");
-        }
-        if (font == null) {
-            font = "Arial";
-        }
-        if (size == 0) {
-            size = 12;
         }
         if (color == null) {
             color = new ColorRGBA(0, 0, 0, 255);

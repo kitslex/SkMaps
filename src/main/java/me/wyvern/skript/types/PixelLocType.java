@@ -43,7 +43,7 @@ public class PixelLocType {
 
                     @Override
                     public @Nullable PixelLoc parse(String s, ParseContext context) {
-                        String[] split = s.split("x|,|");
+                        String[] split = s.split("x|,");
                         if (split.length == 2) {
                             return new PixelLoc(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
                         }
