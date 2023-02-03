@@ -31,6 +31,7 @@ import me.wyvern.SkMaps;
 import me.wyvern.map.MapManager;
 import me.wyvern.map.NamedMap;
 import me.wyvern.map.PixelLoc;
+import me.wyvern.util.ColorRGBA;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,30 +40,26 @@ import java.awt.*;
 
 public class EffDrawText extends Effect {
     static {
-        Skript.registerEffect(EffDrawText.class, "draw text %string% at %number%,[ ]%number% [with font %-string%] [with size %-number%] [with color|colour] %color% on [map] [named|with name] %string%");
+        Skript.registerEffect(EffDrawText.class, "draw text %string% at %pixelloc% [with font %-string%] [with size %-number%] [with color|colour] %colorrgba% on [map] [named|with name] %string%");
     }
 
     private Expression<String> text;
-    private Expression<Number> x;
-    private Expression<Number> y;
+    private Expression<PixelLoc> pixelLoc;
     private Expression<String> font;
     private Expression<Number> size;
-    private Expression<ColorRGB > color;
+    private Expression<ColorRGBA> color;
     private Expression<String> map;
 
 
     @Override
     protected void execute(@NotNull Event e) {
         String text = this.text.getSingle(e);
-        int x = this.x.getSingle(e).intValue();
-        int y = this.y.getSingle(e).intValue();
         String font = this.font.getSingle(e);
         int size = this.size.getSingle(e).intValue();
-        ColorRGB color = this.color.getSingle(e);
+        ColorRGBA color = this.color.getSingle(e);
         String mapName = this.map.getSingle(e);
-        if (text == null || x == 0 || y == 0) {
-            Skript.error("Text, x, or y is null!");
-            return;
+        if (text == null) {
+            Skript.error("Text is null");
         }
         if (font == null) {
             font = "Arial";
@@ -71,7 +68,7 @@ public class EffDrawText extends Effect {
             size = 12;
         }
         if (color == null) {
-            color = new ColorRGB(0, 0, 0);
+            color = new ColorRGBA(0, 0, 0, 255);
         }
         if (mapName == null) {
             Skript.error("Map name is null!");
@@ -81,32 +78,22 @@ public class EffDrawText extends Effect {
         MapManager manager = SkMaps.getInstance().getMapManager();
 
         NamedMap map = manager.getMap(mapName);
-        map.drawText(text, new PixelLoc(x, y), color, drawFont);
+        map.drawText(text, pixelLoc.getSingle(e), color.toColor(), drawFont);
     }
 
     @Override
     public String toString(@Nullable Event e, boolean debug) {
-        if (e == null) {
-            return "draw text";
-        }
-        if (text == null || x == null || y == null) {
-            return "draw text";
-        }
-        if (font ==  null || size == null) {
-            return "draw text " + text.toString(e, debug) + " at " + x.toString(e, debug) + ", " + y.toString(e, debug);
-        }
-        return "draw text " + text.toString(e, debug) + " at " + x.toString(e, debug) + ", " + y.toString(e, debug) + " with font " + font.toString(e, debug) + " with size " + size.toString(e, debug) + " with color " + color.toString(e, debug) + " on map named " + map.toString(e, debug);
+        return null;
     }
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        text = (Expression<String>) exprs[0];
-        x = (Expression<Number>) exprs[1];
-        y = (Expression<Number>) exprs[2];
-        font = (Expression<String>) exprs[3];
-        size = (Expression<Number>) exprs[4];
-        color = (Expression<ColorRGB>) exprs[5];
-        map = (Expression<String>) exprs[6];
+        this.text = (Expression<String>) exprs[0];
+        this.pixelLoc = (Expression<PixelLoc>) exprs[1];
+        this.font = (Expression<String>) exprs[2];
+        this.size = (Expression<Number>) exprs[3];
+        this.color = (Expression<ColorRGBA>) exprs[4];
+        this.map = (Expression<String>) exprs[5];
         return true;
     }
 }

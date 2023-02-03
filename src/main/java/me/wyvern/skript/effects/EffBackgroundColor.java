@@ -30,6 +30,7 @@ import ch.njol.util.Kleenean;
 import me.wyvern.SkMaps;
 import me.wyvern.map.NamedMap;
 import me.wyvern.map.MapManager;
+import me.wyvern.util.ColorRGBA;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,19 +39,19 @@ import java.util.Objects;
 
 public class EffBackgroundColor extends Effect {
     static {
-        Skript.registerEffect(EffBackgroundColor.class, "set (background|full) [colour|color] of [map] %string% to [%-color%|%-boolean%]");
+        Skript.registerEffect(EffBackgroundColor.class, "set (background|full) [colour|color] of [map] %string% to [%-colorrgba%|%-boolean%]");
     }
 
     private Expression<String> map;
-    private Expression<ColorRGB> color;
+    private Expression<ColorRGBA> color;
     private Expression<Boolean> random;
 
     @Override
     protected void execute(@NotNull Event e) {
         int debugLevel = SkMaps.getDebugLevel(SkMaps.getInstance().getDebugLevel());
-        if (map == null || color == null) {
+        if (map == null) {
             if (debugLevel >= 1) {
-                Skript.warning("Map or Color is null!");
+                Skript.warning("Map's name is null!");
             }
             return;
         }
@@ -68,7 +69,7 @@ public class EffBackgroundColor extends Effect {
         if (random != null && Boolean.TRUE.equals(random.getSingle(e))) {
             namedMap.fillRandomly();
         } else {
-            namedMap.fill(Objects.requireNonNull(color.getSingle(e)));
+            namedMap.fill(Objects.requireNonNull(color.getSingle(e)).toColor());
         }
     }
 
@@ -81,7 +82,7 @@ public class EffBackgroundColor extends Effect {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         map = (Expression<String>) exprs[0];
-        color = (Expression<ColorRGB>) exprs[1];
+        color = (Expression<ColorRGBA>) exprs[1];
         random = (Expression<Boolean>) exprs[2];
         return true;
     }

@@ -29,6 +29,8 @@ import ch.njol.skript.util.ColorRGB;
 import ch.njol.util.Kleenean;
 import me.wyvern.SkMaps;
 import me.wyvern.map.NamedMap;
+import me.wyvern.map.PixelLoc;
+import me.wyvern.util.ColorRGBA;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,27 +39,25 @@ import java.util.Objects;
 
 public class EffDrawPixel extends Effect {
     static {
-        Skript.registerEffect(EffDrawPixel.class, "draw pixel [at] %number%,[ ]%number% with [color|colour] %color% on [map] [named|with name] %string%");
+        Skript.registerEffect(EffDrawPixel.class, "draw pixel [at] %pixelloc% with [color|colour] %colorrgba% on [map] [named|with name] %string%");
     }
 
-    private Expression<Number> exprX;
-    private Expression<Number> exprY;
-    private Expression<ColorRGB> exprColor;
+    private Expression<PixelLoc> exprPixelLoc;
+    private Expression<ColorRGBA> exprColor;
     private Expression<String> exprMap;
 
     @Override
     protected void execute(@NotNull Event e) {
         int debugLevel = SkMaps.getDebugLevel(SkMaps.getInstance().getDebugLevel());
-        if (exprX == null || exprY == null || exprMap == null || exprColor == null) {
+        if (exprPixelLoc == null || exprMap == null || exprColor == null) {
             if (debugLevel >= 1) {
                 Skript.warning("One of the expressions is null!");
             }
             return;
         }
-        int x = Objects.requireNonNull(exprX.getSingle(e)).intValue();
-        int y = Objects.requireNonNull(exprY.getSingle(e)).intValue();
+        PixelLoc pixelLoc = exprPixelLoc.getSingle(e);
         String mapName = exprMap.getSingle(e);
-        ColorRGB color = exprColor.getSingle(e);
+        ColorRGBA color = exprColor.getSingle(e);
         if (mapName == null || color == null) {
             if (debugLevel >= 1) {
                 Skript.warning("One of the expressions is null!");
@@ -71,21 +71,20 @@ public class EffDrawPixel extends Effect {
             }
             return;
         }
-        map.setPixel(x, y, color);
+        map.setPixel(pixelLoc.getX(), pixelLoc.getY(), color.toColor());
     }
 
     @Override
     public @NotNull String toString(@Nullable Event e, boolean debug) {
-        return "draw pixel at " + exprX.toString(e, debug) + "," + exprY.toString(e, debug) + " of map named " + exprMap.toString(e, debug) + " with color " + exprColor.toString(e, debug);
+        return "draw pixel at " + exprPixelLoc.toString(e, debug) + " with color " + exprColor.toString(e, debug) + " on map named " + exprMap.toString(e, debug);
     }
 
     @SuppressWarnings("all")
     @Override
     public boolean init(Expression<?> @NotNull [] exprs, int matchedPattern, @NotNull Kleenean isDelayed, SkriptParser.@NotNull ParseResult parseResult) {
-        exprX = (Expression<Number>) exprs[0];
-        exprY = (Expression<Number>) exprs[1];
-        exprColor = (Expression<ColorRGB>) exprs[2];
-        exprMap = (Expression<String>) exprs[3];
+        exprPixelLoc = (Expression<PixelLoc>) exprs[0];
+        exprColor = (Expression<ColorRGBA>) exprs[1];
+        exprMap = (Expression<String>) exprs[2];
         return true;
     }
 }

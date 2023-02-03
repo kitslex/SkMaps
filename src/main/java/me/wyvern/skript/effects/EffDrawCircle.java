@@ -30,48 +30,51 @@ import ch.njol.util.Kleenean;
 import me.wyvern.SkMaps;
 import me.wyvern.map.Map;
 import me.wyvern.map.PixelLoc;
-import me.wyvern.util.Color;
-import org.bukkit.entity.SkeletonHorse;
+import me.wyvern.util.ColorRGBA;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
 public class EffDrawCircle extends Effect {
 
     static {
-        Skript.registerEffect(EffDrawCircle.class, "draw circle at %number%,[ ]%number% with radius %number% with [color|colour] %color% on [map] [named|with name] %string%");
+        Skript.registerEffect(EffDrawCircle.class, "draw circle at %pixelloc% with radius %number% with [color|colour] %colorrgba% on [map] [named|with name] %string%");
     }
 
-    private Expression<Number> x;
-    private Expression<Number> y;
+    private Expression<PixelLoc> loc;
     private Expression<Number> radius;
-    private Expression<ColorRGB> color;
+    private Expression<ColorRGBA> color;
     private Expression<String> map;
 
     @Override
     protected void execute(Event e) {
-        int x = this.x.getSingle(e).intValue();
-        int y = this.y.getSingle(e).intValue();
         int radius = this.radius.getSingle(e).intValue();
-        ColorRGB color = this.color.getSingle(e);
+        ColorRGBA color = this.color.getSingle(e);
         String mapName = this.map.getSingle(e);
         Map map = SkMaps.getInstance().getMapManager().getMap(mapName);
-        if (x == 0 || y == 0 || radius == 0 || color == null || map == null) return;
-        map.drawCircle(new PixelLoc(x, y), radius, color);
+        if (map == null) {
+            Skript.warning("Map named " + mapName + " does not exist!");
+            return;
+        }
+        PixelLoc loc = this.loc.getSingle(e);
+        if (loc == null) {
+            Skript.warning("PixelLoc is null!");
+            return;
+        }
+        map.drawCircle(loc, radius, color.toColor());
     }
 
     @Override
     public @NotNull String toString(Event e, boolean debug) {
-        return "draw circle at " + x.toString(e, debug) + ", " + y.toString(e, debug) + " with radius " + radius.toString(e, debug) + " with color " + color.toString(e, debug) + " on " + map.toString(e, debug);
+        return "draw circle at " + loc.toString(e, debug) + " with radius " + radius.toString(e, debug) + " with color " + color.toString(e, debug) + " on map named " + map.toString(e, debug);
     }
 
     @SuppressWarnings("all")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        x = (Expression<Number>) exprs[0];
-        y = (Expression<Number>) exprs[1];
-        radius = (Expression<Number>) exprs[2];
-        color = (Expression<ColorRGB>) exprs[3];
-        map = (Expression<String>) exprs[4];
+        loc = (Expression<PixelLoc>) exprs[0];
+        radius = (Expression<Number>) exprs[1];
+        color = (Expression<ColorRGBA>) exprs[2];
+        map = (Expression<String>) exprs[3];
         return true;
     }
 }

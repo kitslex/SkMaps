@@ -31,6 +31,7 @@ import me.wyvern.SkMaps;
 import me.wyvern.map.NamedMap;
 import me.wyvern.map.MapManager;
 import me.wyvern.map.ServerMapRenderer;
+import me.wyvern.util.ColorRGBA;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.map.MapView;
@@ -40,11 +41,11 @@ import javax.annotation.Nullable;
 
 public class EffCreateMap extends Effect {
     static {
-        Skript.registerEffect(EffCreateMap.class, "create [a] [new] map (named|with name) %string% with [map] [[with] background [color|colour] %-color%]");
+        Skript.registerEffect(EffCreateMap.class, "create [a] [new] map (named|with name) %string% with [map] [[with] background [color|colour] %-colorrgba%]");
     }
 
     private Expression<String> map;
-    private Expression<ColorRGB> color;
+    private Expression<ColorRGBA> color;
 
     @Override
     protected void execute(@NotNull Event e) {
@@ -68,9 +69,9 @@ public class EffCreateMap extends Effect {
 
         namedMap.setMapId(mapView.getId());
         if (color != null) {
-            ColorRGB colorRGB = color.getSingle(e);
+            ColorRGBA colorRGB = color.getSingle(e);
             if (colorRGB != null) {
-                namedMap.fill(colorRGB);
+                namedMap.fill(colorRGB.toColor());
             }
         }
 
@@ -86,7 +87,7 @@ public class EffCreateMap extends Effect {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         map = (Expression<String>) exprs[0];
-        color = (Expression<ColorRGB>) exprs[1];
+        color = (Expression<ColorRGBA>) exprs[1];
         return true;
     }
 }

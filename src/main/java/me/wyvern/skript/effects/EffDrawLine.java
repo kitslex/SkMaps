@@ -30,6 +30,7 @@ import ch.njol.util.Kleenean;
 import me.wyvern.SkMaps;
 import me.wyvern.map.NamedMap;
 import me.wyvern.map.PixelLoc;
+import me.wyvern.util.ColorRGBA;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,13 +38,12 @@ import javax.annotation.Nullable;
 
 public class EffDrawLine extends Effect {
     static {
-        Skript.registerEffect(EffDrawLine.class, "draw line (from|between) %number%,[ ]%number% [to] %number%,[ ]%number% with [color|colour] %color% on [map] [named|with name] %string%");
+        Skript.registerEffect(EffDrawLine.class, "draw line (from|between) %pixelloc% [to] %pixelloc% with [color|colour] %colorrgba% on [map] [named|with name] %string%");
     }
-    private Expression<Number> exprX1;
-    private Expression<Number> exprY1;
-    private Expression<Number> exprX2;
-    private Expression<Number> exprY2;
-    private Expression<ColorRGB> color;
+
+    private Expression<PixelLoc> exprPixelLoc1;
+    private Expression<PixelLoc> exprPixelLoc2;
+    private Expression<ColorRGBA> color;
     private Expression<String> map;
     @Override
     protected void execute(@NotNull Event e) {
@@ -61,31 +61,25 @@ public class EffDrawLine extends Effect {
             }
             return;
         }
-        int x1 = exprX1.getSingle(e).intValue();
-        int y1 = exprY1.getSingle(e).intValue();
-        int x2 = exprX2.getSingle(e).intValue();
-        int y2 = exprY2.getSingle(e).intValue();
-        ColorRGB color = this.color.getSingle(e);
+
+        ColorRGBA color = this.color.getSingle(e);
 
         NamedMap namedMap = SkMaps.getInstance().getMapManager().getMap(mapName);
         assert color != null;
-        namedMap.drawLine(new PixelLoc(x1, y1), new PixelLoc(x2, y2), color);
+        namedMap.drawLine(exprPixelLoc1.getSingle(e), exprPixelLoc2.getSingle(e), color.toColor());
     }
 
     @Override
     public @NotNull String toString(@Nullable Event e, boolean debug) {
-        return "draw line between " + exprX1.toString(e, debug) + "," + exprY1.toString(e, debug) + " and " + exprX2.toString(e, debug) + "," + exprY2.toString(e, debug) + " of map named " + map.toString(e, debug) + " with color " + color.toString(e, debug);
+        return "draw line from " + exprPixelLoc1.toString(e, debug) + " to " + exprPixelLoc2.toString(e, debug) + " with color " + color.toString(e, debug) + " on map named " + map.toString(e, debug);
     }
 
     @SuppressWarnings("all")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        exprX1 = (Expression<Number>) exprs[0];
-        exprY1 = (Expression<Number>) exprs[1];
-        exprX2 = (Expression<Number>) exprs[2];
-        exprY2 = (Expression<Number>) exprs[3];
-        color = (Expression<ColorRGB>) exprs[4];
-        map = (Expression<String>) exprs[5];
+        exprPixelLoc1 = (Expression<PixelLoc>) exprs[0];
+        exprPixelLoc2 = (Expression<PixelLoc>) exprs[1];
+        color = (Expression<ColorRGBA>) exprs[2];
         return true;
     }
 }
