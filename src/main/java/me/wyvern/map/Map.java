@@ -137,58 +137,6 @@ public class Map implements Serializable {
     }
 
 
-    public void drawLine(PixelLoc a, PixelLoc b, Color c) {
-        int x0 = a.getX();
-        int y0 = a.getY();
-        int x1 = b.getX();
-        int y1 = b.getY();
-        int dx = Math.abs(x1 - x0);
-        int dy = Math.abs(y1 - y0);
-        int sx = x0 < x1 ? 1 : -1;
-        int sy = y0 < y1 ? 1 : -1;
-        int err = dx - dy;
-        while (true) {
-            setPixel(x0, y0, c);
-            if (x0 == x1 && y0 == y1) break;
-            int e2 = 2 * err;
-            if (e2 > -dy) {
-                err = err - dy;
-                x0 = x0 + sx;
-            }
-            if (e2 < dx) {
-                err = err + dx;
-                y0 = y0 + sy;
-            }
-        }
-    }
-
-    public void drawLine(PixelLoc a, PixelLoc b, ColorRGB c) {
-        org.bukkit.Color bukkitColor = c.asBukkitColor();
-        Color awtColor = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
-        int x0 = a.getX();
-        int y0 = a.getY();
-        int x1 = b.getX();
-        int y1 = b.getY();
-        int dx = Math.abs(x1 - x0);
-        int dy = Math.abs(y1 - y0);
-        int sx = x0 < x1 ? 1 : -1;
-        int sy = y0 < y1 ? 1 : -1;
-        int err = dx - dy;
-        while (true) {
-            setPixel(x0, y0, awtColor);
-            if (x0 == x1 && y0 == y1) break;
-            int e2 = 2 * err;
-            if (e2 > -dy) {
-                err = err - dy;
-                x0 = x0 + sx;
-            }
-            if (e2 < dx) {
-                err = err + dx;
-                y0 = y0 + sy;
-            }
-        }
-    }
-
     public void drawCircle(PixelLoc center, int radius, Color color) {
         int x0 = center.getX();
         int y0 = center.getY();
@@ -219,6 +167,12 @@ public class Map implements Serializable {
         g2d.drawString(text, x, y);
         g2d.dispose();
         drawImage(image);
+    }
+
+    public void drawText(String text, PixelLoc loc, ColorRGB color, Font font) {
+        org.bukkit.Color bukkitColor = color.asBukkitColor();
+        Color awtColor = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
+        drawText(text, loc, awtColor, font);
     }
 
     public BufferedImage toBufferedImage() {
@@ -268,6 +222,61 @@ public class Map implements Serializable {
         g2d.dispose();
 
         return dimg;
+    }
+
+    public void drawLine(PixelLoc a, PixelLoc b, Color c) {
+        int x0 = a.getX();
+        int y0 = a.getY();
+        int x1 = b.getX();
+        int y1 = b.getY();
+        int dx = Math.abs(x1 - x0);
+        int dy = Math.abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+        while (true) {
+            setPixel(x0, y0, c);
+            if (x0 == x1 && y0 == y1) break;
+            int e2 = 2 * err;
+            if (e2 > -dy) {
+                err = err - dy;
+                x0 = x0 + sx;
+            }
+            if (e2 < dx) {
+                err = err + dx;
+                y0 = y0 + sy;
+            }
+        }
+    }
+
+    public void drawLine(PixelLoc a, PixelLoc b, ColorRGB c) {
+        org.bukkit.Color bukkitColor = c.asBukkitColor();
+        Color awtColor = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
+        drawLine(a, b, awtColor);
+    }
+
+    public void bezierCurve(PixelLoc a, PixelLoc b, PixelLoc c, PixelLoc d, Color color) {
+        int x0 = a.getX();
+        int y0 = a.getY();
+        int x1 = b.getX();
+        int y1 = b.getY();
+        int x2 = c.getX();
+        int y2 = c.getY();
+        int x3 = d.getX();
+        int y3 = d.getY();
+        double t = 0;
+        while (t <= 1) {
+            double x = Math.pow(1 - t, 3) * x0 + 3 * t * Math.pow(1 - t, 2) * x1 + 3 * Math.pow(t, 2) * (1 - t) * x2 + Math.pow(t, 3) * x3;
+            double y = Math.pow(1 - t, 3) * y0 + 3 * t * Math.pow(1 - t, 2) * y1 + 3 * Math.pow(t, 2) * (1 - t) * y2 + Math.pow(t, 3) * y3;
+            setPixel((int) x, (int) y, color);
+            t += 0.01;
+        }
+    }
+
+    public void bezierCurve(PixelLoc a, PixelLoc b, PixelLoc c, PixelLoc d, ColorRGB color) {
+        org.bukkit.Color bukkitColor = color.asBukkitColor();
+        Color awtColor = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
+        bezierCurve(a, b, c, d, awtColor);
     }
 
 }
