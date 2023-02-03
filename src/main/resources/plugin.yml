@@ -5,7 +5,7 @@ api-version: 1.19
 authors: [ Wyvern ]
 depend: [Skript]
 permissions:
-  skhoneybee.map.admin:
+  skmaps.map.admin:
     description: Allows the user to use the map admin commands
     default: op
 
@@ -13,5 +13,5 @@ commands:
   debugmaps:
     description: Prints the map to player or console
     usage: /debugmaps
-    permission: skhoneybee.map.admin
+    permission: skmaps.map.admin
     permission-message: You do not have permission to use this command
