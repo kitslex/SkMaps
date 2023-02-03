@@ -12,4 +12,4 @@ See the <ins>[**Wiki**](https://github.com/WyvernX-YT/SkMaps/wiki)</ins> for mor
 
 [![SkriptHubViewTheDocs](http://skripthub.net/static/addon/ViewTheDocsButton.png)](http://skripthub.net/docs/?addon=SkMaps)
 
-[![Get on skUnity](https://skunity.com/branding/buttons/get_on_forums.png)](https://docs.skunity.com/syntax/search/addon:skmaps)
+[![Get on skUnity](https://skunity.com/branding/buttons/get_on_docs.png)](https://docs.skunity.com/syntax/search/addon:skmaps)
