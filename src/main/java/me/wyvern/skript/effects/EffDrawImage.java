@@ -25,65 +25,59 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.util.ColorRGB;
 import ch.njol.util.Kleenean;
 import me.wyvern.SkMaps;
 import me.wyvern.map.NamedMap;
-import me.wyvern.map.MapManager;
-import me.wyvern.util.ColorRGBA;
+import me.wyvern.map.PixelLoc;
 import org.bukkit.event.Event;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
-public class EffBackgroundColor extends Effect {
+public class EffDrawImage extends Effect {
+
     static {
-        Skript.registerEffect(EffBackgroundColor.class, "set (background|full) [colour|color] of [map] %string% to [%-colorrgba%|%-boolean%]");
+        Skript.registerEffect(EffDrawImage.class, "draw image %string% on [the] map [named|with name] %string%");
     }
 
+    private Expression<String> image;
     private Expression<String> map;
-    private Expression<ColorRGBA> color;
-    private Expression<Boolean> random;
-
     @Override
-    protected void execute(@NotNull Event e) {
-        int debugLevel = SkMaps.getDebugLevel(SkMaps.getInstance().getDebugLevel());
+    protected void execute(Event e) {
+        File imageFile = new File(SkMaps.getInstance().getDataFolder(), "images/" + image.getSingle(e));
+        if (!imageFile.exists()) {
+            Skript.warning("Image file does not exist!");
+            return;
+        }
+
+        BufferedImage image = null;
+        try {
+            image = javax.imageio.ImageIO.read(imageFile);
+        } catch (Exception ex) {
+            Skript.warning("Error reading image file!");
+            return;
+        }
+        String mapName = this.map.getSingle(e);
+        if (image == null || mapName == null) return;
+        NamedMap map = SkMaps.getInstance().getMapManager().getMap(mapName);
         if (map == null) {
-            if (debugLevel >= 1) {
-                Skript.warning("Map's name is null!");
-            }
-            return;
-        }
-        MapManager mapManager = SkMaps.getInstance().getMapManager();
-        String mapName = map.getSingle(e);
-        if (!mapManager.mapExists(mapName)) {
-            if (debugLevel >= 1) {
-                Skript.warning("Map " + mapName + " does not exist!");
-            }
+            Skript.warning("Map named " + mapName + " does not exist!");
             return;
         }
 
-        NamedMap namedMap = SkMaps.getInstance().getMapManager().getMap(Objects.requireNonNull(map.getSingle(e)));
-
-        if (random != null && Boolean.TRUE.equals(random.getSingle(e))) {
-            namedMap.fillRandomly();
-        } else {
-            namedMap.fill(Objects.requireNonNull(color.getSingle(e)).toColor());
-        }
+        map.drawImage(image);
     }
 
     @Override
-    public @NotNull String toString(@Nullable Event e, boolean debug) {
-        return "Set Background Color of " + map.toString(e, debug) + " to " + color.toString(e, debug);
+    public String toString(@Nullable Event e, boolean debug) {
+        return null;
     }
 
-    @SuppressWarnings("all")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        map = (Expression<String>) exprs[0];
-        color = (Expression<ColorRGBA>) exprs[1];
-        random = (Expression<Boolean>) exprs[2];
+        this.image = (Expression<String>) exprs[0];
+        this.map = (Expression<String>) exprs[1];
         return true;
     }
 }

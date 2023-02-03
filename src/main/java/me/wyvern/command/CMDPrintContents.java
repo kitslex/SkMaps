@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-import static me.wyvern.util.Color.colorize;
+import static me.wyvern.util.ColorRGBA.colorize;
 
 public class CMDPrintContents implements CommandExecutor {
     @Override
