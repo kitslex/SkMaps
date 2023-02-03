@@ -47,24 +47,10 @@ public class MapManager {
         String debugLevel = SkMaps.getInstance().getDebugLevel();
         int level = SkMaps.getDebugLevel(debugLevel);
         if (maps.containsKey(map.getMapName())) {
-            switch(level) {
-                case 0:
-                    return;
-                case 1:
-                    Skript.warning(ColorRGBA.colorize(SkMaps.getInstance().getPrefix() + " &cMap with name " + map.getMapName() + " already exists!"));
-                    return;
-                case 2:
-                case 3:
-                    Stream<Player> players = (Stream<Player>) Bukkit.getOnlinePlayers().stream();
-                    Stream<Player> playersWithPermission = players.filter(player -> player.hasPermission("skhoneybee.map.admin"));
-                    String prefix = SkMaps.getInstance().getAdminPrefix();
-                    String message = ColorRGBA.colorize(prefix + " &cA map with the name &e" + map.getMapName() + " &calready exists!");
-                    playersWithPermission.forEach(player -> player.sendMessage(message));
-
-                    Skript.error("A map with the name " + map.getMapName() + " already exists!");
-                    return;
+            if (level >= 1) {
+                Skript.warning("Map with name " + map.getMapName() + " already exists.");
+                return;
             }
-            return;
         }
         MapView mapView = Bukkit.getMap(map.getMapId());
         mapView.getRenderers().clear();
