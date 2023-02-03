@@ -56,6 +56,12 @@ public class EffSaveMap extends Effect {
         String mapName = map.getSingle(e);
 
         NamedMap namedMap = mapManager.getMap(mapName);
+        if (namedMap == null) {
+            if (debugLevel >= 1) {
+                Skript.warning("Map named " + mapName + " does not exist!");
+            }
+            return;
+        }
         namedMap.save();
     }
 

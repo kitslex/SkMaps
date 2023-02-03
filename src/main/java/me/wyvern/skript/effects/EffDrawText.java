@@ -86,7 +86,7 @@ public class EffDrawText extends Effect {
 
     @Override
     public String toString(@Nullable Event e, boolean debug) {
-        return "draw text " + text.toString(e, debug) + " at " + x.toString(e, debug) + ", " + y.toString(e, debug) + " with font " + font.toString(e, debug) + " with size " + size.toString(e, debug) + " with color " + color.toString(e, debug) + " on map named " + map.toString(e, debug);
+          return "draw text " + text.toString(e, debug) + " at " + x.toString(e, debug) + ", " + y.toString(e, debug) + " with font " + font.toString(e, debug) + " with size " + size.toString(e, debug) + " with color " + color.toString(e, debug) + " on map named " + map.toString(e, debug);
     }
 
     @Override

@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 
 public class EffDrawLine extends Effect {
     static {
-        Skript.registerEffect(EffDrawLine.class, "draw line (from|between) %number%,[ ]%number%( to | )number%,[ ]%number% with [color|colour] %color% on [map] [named|with name] %string%");
+        Skript.registerEffect(EffDrawLine.class, "draw line (from|between) %number%,[ ]%number% [to] %number%,[ ]%number% with [color|colour] %color% on [map] [named|with name] %string%");
     }
     private Expression<Number> exprX1;
     private Expression<Number> exprY1;

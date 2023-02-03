@@ -254,4 +254,29 @@ public class Map implements Serializable {
         Color awtColor = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
         drawLine(a, b, awtColor);
     }
+
+    public void bezierCurve(PixelLoc a, PixelLoc b, PixelLoc c, PixelLoc d, Color color) {
+        int x0 = a.getX();
+        int y0 = a.getY();
+        int x1 = b.getX();
+        int y1 = b.getY();
+        int x2 = c.getX();
+        int y2 = c.getY();
+        int x3 = d.getX();
+        int y3 = d.getY();
+        double t = 0;
+        while (t <= 1) {
+            double x = Math.pow(1 - t, 3) * x0 + 3 * t * Math.pow(1 - t, 2) * x1 + 3 * Math.pow(t, 2) * (1 - t) * x2 + Math.pow(t, 3) * x3;
+            double y = Math.pow(1 - t, 3) * y0 + 3 * t * Math.pow(1 - t, 2) * y1 + 3 * Math.pow(t, 2) * (1 - t) * y2 + Math.pow(t, 3) * y3;
+            setPixel((int) x, (int) y, color);
+            t += 0.01;
+        }
+    }
+
+    public void bezierCurve(PixelLoc a, PixelLoc b, PixelLoc c, PixelLoc d, ColorRGB color) {
+        org.bukkit.Color bukkitColor = color.asBukkitColor();
+        Color awtColor = new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
+        bezierCurve(a, b, c, d, awtColor);
+    }
+
 }

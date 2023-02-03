@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 
 public class EffLoadMap extends Effect {
     static {
-        Skript.registerEffect(EffSaveMap.class, "load [the] map [named|with name] %string%");
+        Skript.registerEffect(EffLoadMap.class, "load [the] map [named|with name] %string%");
     }
 
     private Expression<String> map;
